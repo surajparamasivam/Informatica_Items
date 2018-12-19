@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_idv_cleanup" default="compile.module.idv_cleanup">
+  <dirname property="module.idv_cleanup.basedir" file="${ant.file.module_idv_cleanup}"/>
+  
+  <property name="module.jdk.home.idv_cleanup" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.idv_cleanup" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.idv_cleanup" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.idv_cleanup" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="idv_cleanup.output.dir" value="${module.idv_cleanup.basedir}/out/production/IDV_Cleanup"/>
+  <property name="idv_cleanup.testoutput.dir" value="${module.idv_cleanup.basedir}/out/test/IDV_Cleanup"/>
+  
+  <path id="idv_cleanup.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="idv_cleanup.module.production.classpath">
+    <path refid="${module.jdk.classpath.idv_cleanup}"/>
+  </path>
+  
+  <path id="idv_cleanup.runtime.production.module.classpath">
+    <pathelement location="${idv_cleanup.output.dir}"/>
+  </path>
+  
+  <path id="idv_cleanup.module.classpath">
+    <path refid="${module.jdk.classpath.idv_cleanup}"/>
+    <pathelement location="${idv_cleanup.output.dir}"/>
+  </path>
+  
+  <path id="idv_cleanup.runtime.module.classpath">
+    <pathelement location="${idv_cleanup.testoutput.dir}"/>
+    <pathelement location="${idv_cleanup.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.idv_cleanup">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.idv_cleanup">
+    <patternset refid="excluded.from.module.idv_cleanup"/>
+  </patternset>
+  
+  <path id="idv_cleanup.module.sourcepath">
+    <dirset dir="${module.idv_cleanup.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.idv_cleanup" depends="compile.module.idv_cleanup.production,compile.module.idv_cleanup.tests" description="Compile module IDV_Cleanup"/>
+  
+  <target name="compile.module.idv_cleanup.production" depends="register.custom.compilers" description="Compile module IDV_Cleanup; production classes">
+    <mkdir dir="${idv_cleanup.output.dir}"/>
+    <javac2 destdir="${idv_cleanup.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.idv_cleanup}/javac">
+      <compilerarg line="${compiler.args.idv_cleanup}"/>
+      <bootclasspath refid="idv_cleanup.module.bootclasspath"/>
+      <classpath refid="idv_cleanup.module.production.classpath"/>
+      <src refid="idv_cleanup.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.idv_cleanup"/>
+    </javac2>
+    
+    <copy todir="${idv_cleanup.output.dir}">
+      <fileset dir="${module.idv_cleanup.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.idv_cleanup.tests" depends="register.custom.compilers,compile.module.idv_cleanup.production" description="compile module IDV_Cleanup; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.idv_cleanup" description="cleanup module">
+    <delete dir="${idv_cleanup.output.dir}"/>
+    <delete dir="${idv_cleanup.testoutput.dir}"/>
+  </target>
+</project>
